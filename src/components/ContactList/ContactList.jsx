@@ -3,8 +3,6 @@ import Contact from '../Contact/Contact';
 import styles from './ContactList.module.css';
 
 const ContactList = ({ contacts, onDelete }) => {
-
-
   if (contacts.length === 0) {
     return <p className={styles.noContacts}>No contacts available</p>;
   }
@@ -23,7 +21,6 @@ const ContactList = ({ contacts, onDelete }) => {
     </ul>
   );
 };
-
 
 ContactList.propTypes = {
   contacts: PropTypes.arrayOf(

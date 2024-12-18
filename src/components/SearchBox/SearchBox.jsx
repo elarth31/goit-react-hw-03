@@ -4,7 +4,6 @@ import styles from './SearchBox.module.css';
 const SearchBox = ({ value, onFilter }) => {
   const searchId = useId();
 
- 
   const handleChange = (e) => {
     onFilter(e.target.value);  
   };
