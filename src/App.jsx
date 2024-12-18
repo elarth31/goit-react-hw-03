@@ -1,35 +1,62 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from 'react';
+import './App.css';
+import ContactList from './components/ContactList/ContactList';
+import SearchBox from './components/SearchBox/SearchBox';
+import ContactForm from './components/ContactForm/ContactForm';
+
+import contactsData from './data/contacts.json';
+
+
+const PHONEBOOK_KEY = 'phoneBook-contacts';
+
+
+const loadContacts = () => {
+  const storedContacts = localStorage.getItem(PHONEBOOK_KEY);
+  return storedContacts ? JSON.parse(storedContacts) : contactsData;
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [contacts, setContacts] = useState(loadContacts); 
+  const [filter, setFilter] = useState(''); 
+
+ 
+  useEffect(() => {
+    localStorage.setItem(PHONEBOOK_KEY, JSON.stringify(contacts));
+  }, [contacts]);
+
+  
+  const addNewContact = (newContact) => {
+    setContacts((prevContacts) => [...prevContacts, newContact]);
+  };
+
+
+  const removeContact = (id) => {
+    setContacts((prevContacts) =>
+      prevContacts.filter((contact) => contact.id !== id)
+    );
+  };
+
+
+  const updateFilter = (value) => {
+    const formattedValue = value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+    setFilter(formattedValue);
+  };
+
+
+const visibleContacts = contacts.filter((contact) =>
+  contact.name.toLowerCase().startsWith(filter.toLowerCase()) 
+);
+
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h1>Phone book</h1>
+      <ContactForm onAdd={addNewContact} />
+      <SearchBox value={filter} onFilter={updateFilter} />
+      <ContactList contacts={visibleContacts} onDelete={removeContact} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
+
